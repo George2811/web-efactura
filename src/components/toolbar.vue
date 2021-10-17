@@ -8,7 +8,7 @@
       <v-btn text class="text-capitalize" to="/login">
         Iniciar Sesión
       </v-btn>
-      <v-btn text class="text-capitalize" to="/">
+      <v-btn text class="text-capitalize" to="/register">
         Registrarse
       </v-btn>
     </v-app-bar>
