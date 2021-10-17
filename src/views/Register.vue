@@ -21,7 +21,7 @@ export default {
 
 <style scoped>
 .bg{
-  background-image: url("../assets/53026.jpg");
+  background-image: url("../assets/table-office-chairs-glass-window-wallpaper-preview.jpg");
   width: 100%;
   height: 89vh;
   background-size: cover;
