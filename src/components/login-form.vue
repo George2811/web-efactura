@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto py-8 primary" dark max-width="394">
+  <v-card class="mx-auto py-8 primary" dark max-width="394" style="border-radius: 30px">
     <v-card-text class="py-0 mb-6">
       <h1 class="text-h4 text-center white--text">
         Iniciar Sesión
