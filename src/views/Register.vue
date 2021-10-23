@@ -1,20 +1,16 @@
 <template>
-  <div
-      class="bg py-12">
-    <Registerform
-        class="py-12"
-    >
-    </Registerform>
+  <div class="bg py-12">
+    <register-form class="py-12"></register-form>
   </div>
 </template>
 
 <script>
 
-import Registerform from '../components/register-form.vue'
+import RegisterForm from '../components/register-form.vue'
 export default {
   name: "Register",
   components: {
-    Registerform,
+    RegisterForm,
   }
 }
 </script>
