@@ -28,7 +28,7 @@ export default {
 }
 
 .bg{
-  background-image: url("../assets/table-office-chairs-glass-window-wallpaper-preview.jpg");
+  background-image: url("../assets/bg_register.jpg");
   width: 100%;
   height: 91vh;
   background-size: cover;
