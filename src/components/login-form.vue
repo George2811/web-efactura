@@ -47,11 +47,12 @@ export default {
     password: '',
     usernameRules: [
       v => !!v || 'Nombre de usuario requerido',
-      v => v.length <= 10 || 'El nombre de usuraio contiene menos de 10 caracteres'
+      v => v.length <= 30 || 'El nombre de usuraio es muy extenso'
     ],
     passwordRules: [
       v => !!v || 'Contraseña requerida',
-      v => v.length <= 10 || 'La contraseña contiene menos de 10 caracteres'
+      v => v.length > 6 || 'La contraseña contiene menos de 6 caracteres',
+      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número'
     ],
     user: {
       username: '',
