@@ -5,12 +5,39 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn text class="text-capitalize" to="/login">
+      <v-btn text class="text-capitalize" to="/login" v-if="!logged">
         Iniciar Sesión
       </v-btn>
-      <v-btn text class="text-capitalize" to="/register">
+      <v-btn text class="text-capitalize" to="/register" v-if="!logged">
         Registrarse
       </v-btn>
+
+      <v-menu offset-y v-else>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              color="primary"
+              fab
+              small
+              v-bind="attrs"
+              v-on="on"
+          >
+            <v-icon>
+              mdi-account
+            </v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>
+              <v-btn text class="text-capitalize">
+                <v-icon>mdi-logout</v-icon> Cerrar Sesión
+              </v-btn>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
     </v-app-bar>
   </v-card>
 </template>
@@ -20,7 +47,7 @@ export default {
   name: "toolbar",
   data(){
     return{
-
+      logged: false
     }
   }
 }

@@ -2,7 +2,7 @@
 
   <div class="global">
     <div class="bg py-12"></div>
-    <div>
+    <div class="form1">
       <login-form class="my-12"></login-form>
     </div>
   </div>
@@ -34,6 +34,12 @@ export default {
     position: absolute;
     margin-top: -4%; /*TRUQUITO PARA QUITAR EL SCROLL INCOMODO*/
     filter: blur(2px);
+  }
+
+  .form1{
+    margin: 0 auto;
+    position: relative;
+    top: 20%
   }
 
 </style>
