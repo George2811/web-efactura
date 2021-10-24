@@ -1,7 +1,8 @@
 <template>
   <v-card
       class="mx-auto"
-      max-width="304"
+      width="324"
+      max-height="320"
       elevation="2"
   >
     <v-card-text>
@@ -11,6 +12,7 @@
         <v-list-item
             v-for="item in values"
             :key="item.day"
+            class="item"
         >
           <v-list-item-title class="text-caption">{{ item.type }}</v-list-item-title>
 
@@ -30,7 +32,7 @@
           </v-list-item-subtitle>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item class="item">
           <v-list-item-title class="font-weight-bold text-body-2">Monto a pagar</v-list-item-title>
           <v-list-item-subtitle class="text-right font-weight-bold text-body-2">
             S/. 1500
@@ -87,7 +89,7 @@
           fab
           x-small
           color="primary"
-          class="text-lowercase text-body-1 ml-4"
+          class="text-lowercase text-body-1 ml-4 mr-3"
       >
         i
       </v-btn>
@@ -116,5 +118,8 @@ export default {
   }
   .btns{
     margin: -16px 0;
+  }
+  .item{
+    margin: -9px 0;
   }
 </style>
