@@ -41,12 +41,48 @@
 
     <v-card-actions class="btns">
       <v-spacer></v-spacer>
-      <v-btn
-        text
-        color="error"
+
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="290"
       >
-        Eliminar
-      </v-btn>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              text
+              color="error"
+              class="text-capitalize"
+              v-bind="attrs"
+              v-on="on"
+          >
+            Eliminar
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="text-h5">
+            Eliminar
+          </v-card-title>
+          <v-card-text>¿Desea eliminar la factura?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="green darken-1"
+                text
+                @click="dialog = false"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn
+                color="error"
+                text
+                @click="dialog = false"
+            >
+              Sí, eliminar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-btn
           fab
           x-small
@@ -64,6 +100,7 @@
 export default {
   name: "bill-card",
   data: () => ({
+    dialog: false,
     values: [
       { type: 'Valor Nominal', symbol: 'S/. ', temp: '975.00' },
       { type: 'Fecha vencimiento', symbol: '', temp: '22/10/22' },
