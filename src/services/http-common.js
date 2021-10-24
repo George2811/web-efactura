@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL: 'https://linkDeLaApi.com',
+    baseURL: 'https://e-factura-api.herokuapp.com/api/',
     headers:{
         'Content-type':'application/json',
         'Access-Control-Allow-Origin' : '*',
