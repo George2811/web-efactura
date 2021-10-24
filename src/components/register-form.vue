@@ -1,150 +1,62 @@
 <template>
-  <div>
-    <v-card
-        class="mx-auto primary"
-        max-width="500"
-        style="border-radius: 30px"
+  <v-card
+      class="mx-auto py-8 primary"
+      dark
+      max-width="400"
+      style="border-radius: 30px"
+  >
+    <v-card-text
+        class="py-0 mb-6"
     >
-      <v-card-title
-          class="mx-auto primary"
-          style="text-align: center; margin: auto;"
+      <h1
+          class="text-h4 text-center white--text"
       >
-        <h1
-            class="mx-auto primary text-h4"
-            style="text-align: center; margin: auto; color: white;"
-        >
-          REGISTRARSE
-        </h1>
-      </v-card-title>
-      <v-card
-          class="mx-auto primary"
-          width="45%"
-          style="float: left;" elevation="0"
+        Registrarse
+      </h1>
+    </v-card-text>
+    <v-form
+        v-model="register"
+        class="d-flex flex-column"
+    >
+      <v-text-field
+          v-model="username"
+          label="Nombre de usuario"
+          placeholder="Hugo Quispe"
+          :rules="usernameRules"
+          outlined
+          class="mx-5"
+          required
+      ></v-text-field>
+      <v-text-field
+          v-model="password"
+          label="Contraseña"
+          placeholder="12345"
+          outlined
+          class="mx-5"
+          required
+          :rules="passwordRules"
       >
-        <v-card
-            class="primary"
-            elevation="0"
-            height="10px"
-        >
-        </v-card>
-        <v-card
-            elevation="0"
-            class="mx-auto primary"
-            align="right"
-            width="100%"
-        >
-          <label
-              style="color: white"
-          >
-            Nombre de Usuario :
-          </label>
-        </v-card>
-        <v-card
-            class="primary"
-            elevation="0"
-            height="35px"
-        >
-        </v-card>
-        <v-card
-            elevation="0"
-            class="mx-auto primary"
-            align="right"
-            width="100%"
-        >
-          <label
-              style="color: white"
-          >
-            Nombre de Usuario :
-          </label>
-        </v-card>
-        <v-card
-            elevation="0"
-            height="40px"
-            class="primary"
-        >
-        </v-card>
-        <v-card
-            elevation="0"
-            class="mx-auto primary"
-            align="right"
-            width="100%"
-        >
-          <label
-              style="color: white"
-          >
-            Nombre de Usuario :
-          </label>
-        </v-card>
-        <v-card
-            elevation="0"
-            height="10px"
-            class="primary"
-        >
-        </v-card>
-      </v-card>
-      <v-card
-          class="mx-auto primary"
-          width="3%"
-          height="100px"
-          style="float: left;"
-          elevation="0"
+      </v-text-field>
+      <v-text-field
+          v-model="confirmed"
+          label="Confirmar Contraseña"
+          placeholder="12345"
+          outlined
+          class="mx-5"
+          required
+          :rules="confirmedRules"
       >
-      </v-card>
-      <v-form
-          class="primary"
-          width="45%"
+      </v-text-field>
+      <v-btn
+          :disabled="!register"
+          color="success"
+          class="mx-12"
           type="submit"
-          v-model="register"
-          style="float: left;"
-          elevation="0"
       >
-        <v-card></v-card>
-        <v-text-field
-            rounded
-            solo
-            dense
-            v-model="username"
-            placeholder="Vetaman999"
-        >
-        </v-text-field>
-        <v-text-field
-            rounded
-            solo
-            dense
-            v-model="password"
-            placeholder="12431243"
-        >
-        </v-text-field>
-        <v-text-field
-            rounded
-            solo
-            dense
-            v-model="confirmed"
-            placeholder="123456"
-        >
-        </v-text-field>
-        <v-card></v-card>
-      </v-form>
-      <div
-          class="text-center">
-        <v-btn
-            :disabled="!register"
-            class="mr-4"
-            color="success"
-            width="50%"
-            @click="submit"
-            rounded
-        >
-          Crear Cuenta
-        </v-btn>
-        <v-card
-            class="transparent"
-            height="10px"
-            elevation="0"
-        ></v-card>
-      </div>
-    </v-card>
-  </div>
+        Registrarse
+      </v-btn>
+    </v-form>
+  </v-card>
 </template>
 
 <script>
