@@ -3,8 +3,8 @@
   <div class="global">
     <div class="bg py-12"></div>
 
-    <div class="form1">
-      <register-form class="py-12"></register-form>
+    <div class="form1 py-12">
+      <register-form></register-form>
     </div>
   </div>
 

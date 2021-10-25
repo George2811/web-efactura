@@ -51,8 +51,9 @@ export default {
     ],
     passwordRules: [
       v => !!v || 'Contraseña requerida',
-      v => v.length > 6 || 'La contraseña contiene menos de 6 caracteres',
-      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número'
+      v => v.length >= 6 || 'La contraseña contiene menos de 6 caracteres',
+      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número',
+      (value) => (value && /[a-z]{1}/.test(value)) || 'La contraseña debe contener al menos una letra'
     ],
     user: {
       username: '',

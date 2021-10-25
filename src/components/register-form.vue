@@ -2,15 +2,11 @@
   <v-card
       class="mx-auto py-8 primary"
       dark
-      max-width="400"
+      max-width="394"
       style="border-radius: 30px"
   >
-    <v-card-text
-        class="py-0 mb-6"
-    >
-      <h1
-          class="text-h4 text-center white--text"
-      >
+    <v-card-text class="py-0 mb-6">
+      <h1 class="text-h4 text-center white--text">
         Registrarse
       </h1>
     </v-card-text>
@@ -44,7 +40,7 @@
           outlined
           class="mx-5"
           required
-          :rules="confirmedRules"
+          :rules="confirmedRules.concat(passwordConfirmationRule)"
       >
       </v-text-field>
       <v-btn
@@ -69,21 +65,31 @@ export default {
     confirmed: '',
     usernameRules: [
       v => !!v || 'Nombre de usuario requerido',
-      v => v.length <= 10 || 'El nombre de usuraio contiene menos de 10 caracteres'
+      v => v.length >= 10 || 'El nombre de usuraio contiene menos de 10 caracteres'
     ],
     passwordRules: [
       v => !!v || 'Contraseña requerida',
-      v => v.length <= 10 || 'La contraseña contiene menos de 10 caracteres'
+      v => v.length >= 6 || 'La contraseña no es segura',
+      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número',
+      (value) => (value && /[a-z]{1}/.test(value)) || 'La contraseña debe contener al menos una letra'
     ],
     confirmedRules: [
       v => !!v || 'Contraseña requerida',
-      v => v.length <= 10 || 'La contraseña contiene menos de 10 caracteres'
+      v => v.length >= 6 || 'La contraseña no es segura',
+      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número',
+      (value) => (value && /[a-z]{1}/.test(value)) || 'La contraseña debe contener al menos una letra'
     ],
     user: {
       username: '',
       password: '',
     }
   }),
+  computed:{
+    passwordConfirmationRule() {
+      return () =>
+          this.password === this.confirmed || "Las contraseñas no coinciden";
+    }
+  },
   methods: {
     sendForm(){
       this.user.username = this.email;
