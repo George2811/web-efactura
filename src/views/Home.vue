@@ -25,6 +25,9 @@
         max-width="1200" elevation="5"
     >
       <div class="d-sm-flex justify-space-around sub-div">
+        <!--
+        <HomeAlt></HomeAlt>
+        -->
         <bill-card v-for="(a, i) in data" :key="i"></bill-card>
       </div>
 
@@ -40,11 +43,13 @@
 
 <script>
 import BillCard from '@/components/bill-card.vue'
+//import HomeAlt from '../components/home-card-alt.vue'
 
 export default {
   name: 'Home',
   components: {
-    BillCard
+    BillCard,
+    //HomeAlt
   },
   data: () => ({
     page: 1,
