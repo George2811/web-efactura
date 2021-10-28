@@ -8,6 +8,9 @@
       <v-btn text class="text-capitalize" to="/login" v-if="!logged">
         Iniciar Sesión
       </v-btn>
+      <v-btn text class="text-capitalize" to="/detail" v-if="!logged">
+        Detalle
+      </v-btn>
       <v-btn text class="text-capitalize" to="/register" v-if="!logged">
         Registrarse
       </v-btn>
