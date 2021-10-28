@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
-import Detail from "../views/Detail.vue";
+import Detail from "../views/BillDetail.vue";
 
 Vue.use(VueRouter)
 

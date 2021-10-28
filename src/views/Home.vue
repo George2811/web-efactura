@@ -4,10 +4,10 @@
         class="mx-4 mx-sm-auto px-8 py-3 header-part d-sm-flex"
         max-width="1200" elevation="5"
     >
-      <p class="text-caption text-sm-h5 font-weight-bold cl-text">Mis Facturas</p>
+      <p class="text-h6 text-sm-h5 font-weight-bold cl-text">Mis Facturas</p>
       <v-spacer></v-spacer>
 
-      <p class="text-caption text-sm-h5 font-weight-bold cl-text">T.I.R 28.6666%</p>
+      <p class="text-caption  text-sm-h5 font-weight-bold cl-text">T.I.R 28.6666%</p>
       <v-spacer></v-spacer>
 
       <v-btn
