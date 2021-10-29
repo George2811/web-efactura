@@ -3,100 +3,103 @@
       v-model="newBill"
       class="d-md-flex  mx-auto"
   >
+    <!-- Columna de la izquierda -->
     <v-card min-width="50%" elevation="0">
       <v-card min-width="70%" class="d-flex flex-column mx-sm-12" elevation="0">
         <v-list class="list py-0">
           <v-list-item class="">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Nombre</v-list-item-title>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Nombre</v-list-item-title>
             <v-text-field
                 v-model="bill.name"
                 placeholder="Factura-1"
                 solo
                 required
                 dense
-                :rules="billRules"
+                :rules="nameRules"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item class="my-0 py-0">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">R.U.C</v-list-item-title>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">R.U.C</v-list-item-title>
             <v-text-field
                 v-model="bill.ruc"
                 placeholder="0077644654"
                 solo
                 dense
-                required
-                :rules="billRules"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item class="">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Valor Nominal</v-list-item-title>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Valor Nominal</v-list-item-title>
             <v-text-field
                 v-model="bill.vNominal"
                 placeholder="S/. 1500.00"
                 solo
                 dense
                 required
-                :rules="billRules"
+                :rules="numberRules"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item class="">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Fecha de emisión</v-list-item-title>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Fecha de emisión</v-list-item-title>
             <v-text-field
                 v-model="bill.dIssue"
                 placeholder="01/11/21"
                 solo
                 dense
                 required
-                :rules="billRules"
+                :rules="requiredRules"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item class="">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Fecha de vencimiento</v-list-item-title>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Fecha de vencimiento</v-list-item-title>
             <v-text-field
                 v-model="bill.dExpiration"
                 placeholder="01/01/22"
                 solo
                 dense
                 required
-                :rules="billRules"
+                :rules="requiredRules"
             ></v-text-field>
           </v-list-item>
 
-          <v-list-item class="">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Tasa de interés</v-list-item-title>
+          <v-list-item class="d-flex flex-column justify-end flex-sm-row">
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 my-4 mb-sm-0 pb-10">Tasa de interés</v-list-item-title>
             <v-text-field
                 v-model="bill.valueIR"
-                placeholder="7.5"
+                placeholder="7.5 %"
                 solo
                 dense
                 required
-                :rules="billRules"
+                :rules="numberRules"
             ></v-text-field>
-            <v-text-field
+            <v-select
                 v-model="bill.timeIR"
-                placeholder="Anual"
+                :items="times"
+                label="Anual"
                 solo
                 dense
-                required
-                :rules="billRules"
-            ></v-text-field>
-            <v-text-field
+                class="ml-1"
+                :rules="requiredRules"
+            ></v-select>
+            <v-select
                 v-model="bill.cPeriod"
-                placeholder="diario"
+                :items="timesCompounding"
+                label="diaria"
                 solo
                 dense
-                required
-            ></v-text-field>
+                class="ml-1"
+            ></v-select>
+
           </v-list-item>
         </v-list>
       </v-card>
     </v-card>
 
-    <v-card class="mt-10 mt-md-0" min-width="50%" elevation="0">
+    <!-- Columna de la derecha -->
+    <v-card class="mt-sm-6 mt-md-0" min-width="50%" elevation="0">
       <v-card min-width="70%" class="d-flex flex-column mx-sm-12" elevation="0">
         <p class="text-caption text-sm-h6 font-weight-bold cl-text">Gastos Iniciales</p>
         <v-list class="list">
@@ -134,8 +137,17 @@
           </v-list-item>
 
         </v-list>
+        <v-list-item class="">
+          <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Retención</v-list-item-title>
+          <v-text-field
+              v-model="bill.retention"
+              placeholder="00.00"
+              solo
+              dense
+          ></v-text-field>
+        </v-list-item>
       </v-card>
-      <v-card-actions class="d-flex justify-center justify-md-end mt-12">
+      <v-card-actions class="d-flex justify-center justify-md-end mt-5">
         <v-dialog
             v-model="dialog"
             persistent
@@ -201,29 +213,29 @@ export default {
   data: () => ({
     newBill: false,
     dialog: false,
-    username: '',
-    password: '',
-    confirmed: '',
+    times: ['Anual', 'Mensual', 'Bimensual', 'Trimesnsual', 'Cuatrimensual', 'Semestral', 'Semanal'],
+    timesCompounding:['diaria', 'Semanal', 'Mensual'],
     nameRules: [
-      v => !!v || 'Nombre requerido'
+      v => !!v || 'Nombre requerido',
+      v => v.length <= 100 || 'El nombre es muy extenso'
     ],
-    billRules: [
+    requiredRules: [
       v => !!v || 'Campo requerido',
-      (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número',
     ],
-    user: {
-      username: '',
-      password: '',
-    },
+    numberRules: [
+      v => !!v || 'Campo requerido',
+      v=> v>=0||'Solo valor numérico'
+    ],
     bill:{
       name: '',
-      ruc: '',
+      ruc: '', // acepta nulls
       vNominal: '',
       dIssue: '',
       dExpiration: '',
       valueIR: '',
       timeIR: '',
-      cPeriod: ''
+      cPeriod: '', // Por default 0, la BD necesita un valor
+      retention: ''
     }
   }),
 
