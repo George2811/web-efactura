@@ -14,7 +14,7 @@
           depressed
           color="primary"
           class="text-capitalize"
-
+          to="/new-bill"
       >
         Añadir factura +
       </v-btn>
@@ -22,7 +22,7 @@
 
     <v-card
         class="mx-4 mx-sm-auto my-6 px-8 py-12 board-part"
-        max-width="1200" elevation="5"
+        max-width="1200" height="fit" elevation="5"
     >
       <div class="d-sm-flex justify-space-around sub-div">
         <!--
@@ -32,7 +32,7 @@
       </div>
 
       <v-pagination
-          class="pagination"
+          class="pagination pt-12"
           v-model="page"
           :length="3"
       ></v-pagination>
@@ -67,7 +67,6 @@ export default {
   }
   .board-part{
     background-color: #F9F9F9;
-    height: 80%;
   }
   .cl-text{
     color: #1361af;

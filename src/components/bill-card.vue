@@ -1,8 +1,8 @@
 <template>
   <v-card
-      class="mx-auto"
+      class="mx-auto mb-10 mb-md-0"
       width="324"
-      max-height="320"
+      min-height="320"
       elevation="2"
   >
     <v-card-text>
@@ -92,6 +92,7 @@
           x-small
           color="primary"
           class="text-lowercase text-body-1 ml-4 mr-3"
+          to="/detail"
       >
         i
       </v-btn>

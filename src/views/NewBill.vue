@@ -9,7 +9,7 @@
           text
           icon
           color="primary"
-          :to="goToHome"
+          to="/"
       >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
@@ -17,35 +17,34 @@
       <v-spacer></v-spacer>
       <p class="d-inline-flex text-caption text-sm-h6 py-1 mt-2">TCEA: </p>
 
-      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> 24.556498%</p>
+      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> 24.5598%</p>
 
     </v-card>
 
     <v-card
-        class="mx-4 mx-md-auto my-6 px-8 py-12 board-part"
+        class="mx-4 mx-sm-auto my-6 px-8 py-6 board-part"
         max-width="1200" height="fit" elevation="5"
     >
       <div class="d-sm-flex justify-space-around sub-div">
-        <result-details></result-details>
+        <new-bill-form></new-bill-form>
       </div>
-
     </v-card>
+
   </div>
 </template>
 
 <script>
-import ResultDetails from '@/components/result-details.vue'
-
+import NewBillForm from '@/components/new-bill-form.vue'
 export default {
-  name: "Detail",
-  components: {
-    ResultDetails
+  name: "NewBill",
+  components:{
+    NewBillForm
   },
-  computed:{
-    goToHome(){
-      return '/';
-    }
-  }
+  computed: {
+  },
+  data: () => ({
+
+  })
 }
 </script>
 
@@ -64,10 +63,5 @@ export default {
 }
 .sub-div{
   height: 100%;
-}
-.box-values {
-  background: white;
-  border-radius: 15px;
-
 }
 </style>

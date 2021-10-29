@@ -23,6 +23,11 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/new-bill',
+    name: 'NewBill',
+    component: () => import('../views/NewBill.vue')
+  },
+  {
     path: '/detail',
     name: 'Detail',
     component: Detail
