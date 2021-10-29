@@ -99,6 +99,8 @@
     </v-card>
 
     <!-- Columna de la derecha -->
+    <!-- TODO: Gastos Iniciales y Finales con scroll-->
+
     <v-card class="mt-sm-6 mt-md-0" min-width="50%" elevation="0">
       <v-card min-width="70%" class="d-flex flex-column mx-sm-12" elevation="0">
         <p class="text-caption text-sm-h6 font-weight-bold cl-text">Gastos Iniciales</p>
