@@ -85,6 +85,7 @@
                 :rules="requiredRules"
             ></v-select>
             <v-select
+                v-if="isNominal"
                 v-model="bill.cPeriod"
                 :items="timesCompounding"
                 label="diaria"
@@ -240,7 +241,15 @@ export default {
       retention: ''
     }
   }),
-
+  props:[
+      'rateType',
+      'cashType'
+  ],
+  computed:{
+    isNominal(){
+      return this.rateType === 'TN';
+    }
+  }
 }
 </script>
 

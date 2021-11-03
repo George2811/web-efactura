@@ -15,9 +15,9 @@
       </v-btn>
       <p class="text-h6 d-inline-flex text-sm-h5 ml-3 mt-2 font-weight-bold cl-text">Nueva Factura</p>
       <v-spacer></v-spacer>
-      <v-card class="header-part d-flex px-2" min-width="400" elevation="1">
-        <v-icon class="mr-5">mdi-cash</v-icon>
-        <v-radio-group v-model="radioCash" row class="d-flex flex-row  ">
+      <v-card class="header-part d-sm-flex px-2" max-width="420" elevation="0">
+        <v-icon class="mr-5 d-inline-flex">mdi-cash</v-icon>
+        <v-radio-group v-model="radioCash" row class="d-flex flex-row d-inline-flex">
           <v-radio
               v-for="n in coin"
               :key="n"
@@ -25,9 +25,9 @@
               :value="n"
           ></v-radio>
         </v-radio-group>
-        <v-spacer></v-spacer>
+        <v-spacer class="mx-5"></v-spacer>
         <v-icon class="mr-5">mdi-coffee-outline</v-icon>
-        <v-radio-group v-model="radioRates" row class="d-flex flex-row">
+        <v-radio-group v-model="radioRates" row class="d-flex flex-row d-inline-flex">
           <v-radio
               v-for="n in rate"
               :key="n"
@@ -45,7 +45,7 @@
         max-width="1200" height="fit" elevation="5"
     >
       <div class="d-sm-flex justify-space-around sub-div">
-        <new-bill-form></new-bill-form>
+        <new-bill-form :rateType="radioRates" :cashType="radioCash"></new-bill-form>
       </div>
     </v-card>
 
@@ -62,8 +62,8 @@ export default {
   computed: {
   },
   data: () => ({
-    radioCash: 1,
-    radioRates: 1,
+    radioCash: 'S/.',
+    radioRates: 'TN',
     coin:['S/.', '$'],
     rate:['TN', 'TE']
   })
