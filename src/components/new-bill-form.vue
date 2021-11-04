@@ -43,26 +43,92 @@
 
           <v-list-item class="">
             <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Fecha de emisión</v-list-item-title>
-            <v-text-field
-                v-model="bill.dIssue"
-                placeholder="01/11/21"
-                solo
-                dense
-                required
-                :rules="requiredRules"
-            ></v-text-field>
+            <v-dialog
+                ref="dialogIssue"
+                v-model="modalDIssue"
+                :return-value.sync="bill.dIssue"
+                persistent
+                width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    prepend-icon="mdi-calendar"
+                    v-model="bill.dIssue"
+                    readonly
+                    solo
+                    dense
+                    required
+                    :rules="requiredRules"
+                    v-bind="attrs"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  v-model="bill.dIssue"
+                  scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    color="error"
+                    @click="modalDIssue = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogIssue.save(bill.dIssue)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-dialog>
           </v-list-item>
 
           <v-list-item class="">
             <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Fecha de vencimiento</v-list-item-title>
-            <v-text-field
-                v-model="bill.dExpiration"
-                placeholder="01/01/22"
-                solo
-                dense
-                required
-                :rules="requiredRules"
-            ></v-text-field>
+            <v-dialog
+                ref="dialogExpired"
+                v-model="modalDExpired"
+                :return-value.sync="bill.dExpiration"
+                persistent
+                width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    prepend-icon="mdi-calendar"
+                    v-model="bill.dExpiration"
+                    readonly
+                    solo
+                    dense
+                    required
+                    :rules="requiredRules"
+                    v-bind="attrs"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  v-model="bill.dExpiration"
+                  scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    color="error"
+                    @click="modalDExpired = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogExpired.save(bill.dExpiration)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-dialog>
           </v-list-item>
 
           <v-list-item class="d-flex flex-column justify-end flex-sm-row">
@@ -95,6 +161,7 @@
             ></v-select>
 
           </v-list-item>
+
           <v-list-item>
             <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Retención</v-list-item-title>
             <v-text-field
@@ -109,11 +176,11 @@
       </v-card>
     </v-card>
 
-    <!-- Columna de la derecha -->
-    <!-- TODO: Gastos Iniciales y Finales con scroll-->
 
+    <!-- Columna de la derecha -->
     <v-card class="mt-sm-6 mt-md-0" min-width="50%" elevation="0">
-      <v-card min-width="70%" class="d-flex flex-column mx-sm-12" elevation="0">
+      <v-card min-width="70%" min-height="370" class="d-flex flex-column mx-sm-12" elevation="0">
+
         <v-card-title class="d-flex py-0">
           <p class="text-caption text-sm-h6 font-weight-bold cl-text mr-5">Gastos Iniciales</p>
           <v-dialog
@@ -186,7 +253,7 @@
             </v-card>
           </v-dialog>
         </v-card-title>
-        <v-list class="list scroll-box">
+        <v-list class="list scroll-box" v-if="isInitialCosts">
           <v-virtual-scroll
               :bench="benched"
               :items="initialCosts"
@@ -194,7 +261,7 @@
               item-height="35"
           >
             <template v-slot:default="{ item }">
-              <v-list-item :key="item">
+              <v-list-item :key="item.description">
                 <v-list-item-content>
                   <v-list-item-title>
                     {{ item.description }}
@@ -209,12 +276,45 @@
                 </v-list-item-content>
 
                 <v-list-item-action>
-                  <v-btn
-                      icon
-                      x-small
+                  <v-dialog
+                      v-model="dialogInitialItem"
+                      persistent
+                      max-width="270"
                   >
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          icon
+                          x-small
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="text-h5">
+                        ¿Seguro que desea eliminar este item?
+                      </v-card-title>
+                      <v-card-text>Desea eliminar el gasto inicial por "{{item.description}}", con costo de {{item.cost}}"</v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="dialogInitialItem = false"
+                        >
+                          Cancelar
+                        </v-btn>
+                        <v-btn
+                            color="primary"
+                            text
+                            @click="deleteInitialCost(item)"
+                        >
+                          Sí, Eliminar
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item-action>
               </v-list-item>
 
@@ -222,6 +322,7 @@
             </template>
           </v-virtual-scroll>
         </v-list>
+        <v-card-subtitle class="mt-5" v-else>No existen gastos iniciales.</v-card-subtitle>
 
         <v-card-title class="d-flex my-2 py-0 pt-5">
           <p class="text-caption text-sm-h6 font-weight-bold cl-text mr-8">Gastos Finales</p>
@@ -295,7 +396,7 @@
             </v-card>
           </v-dialog>
         </v-card-title>
-        <v-list class="list scroll-box">
+        <v-list class="list scroll-box" v-if="isFinalCosts">
           <v-virtual-scroll
               :bench="benched"
               :items="finalCosts"
@@ -303,7 +404,7 @@
               item-height="35"
           >
             <template v-slot:default="{ item }">
-              <v-list-item :key="item">
+              <v-list-item :key="item.description">
                 <v-list-item-content>
                   <v-list-item-title>
                     {{ item.description }}
@@ -318,12 +419,45 @@
                 </v-list-item-content>
 
                 <v-list-item-action>
-                  <v-btn
-                      icon
-                      x-small
+                  <v-dialog
+                      v-model="dialogFinalItem"
+                      persistent
+                      max-width="270"
                   >
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          icon
+                          x-small
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="text-h5">
+                        ¿Seguro que desea eliminar este item?
+                      </v-card-title>
+                      <v-card-text>Desea eliminar el gasto final por "{{item.description}}", con costo de {{item.cost}}"</v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="dialogFinalItem = false"
+                        >
+                          Cancelar
+                        </v-btn>
+                        <v-btn
+                            color="primary"
+                            text
+                            @click="deleteFinalCost(item)"
+                        >
+                          Sí, Eliminar
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item-action>
               </v-list-item>
 
@@ -331,7 +465,10 @@
             </template>
           </v-virtual-scroll>
         </v-list>
+        <v-card-subtitle class="mt-5" v-else>No existen gastos finales.</v-card-subtitle>
+
       </v-card>
+
       <v-card-actions class="d-flex justify-center justify-md-end mt-2">
         <v-dialog
             v-model="dialog"
@@ -385,7 +522,6 @@
           Guardar
         </v-btn>
       </v-card-actions>
-
     </v-card>
 
 
@@ -396,8 +532,14 @@
 export default {
   name: "new-bill-form",
   data: () => ({
+    modalDIssue: false,
+    modalDExpired: false,
     newBill: false,
-    dialog: false,
+    dialog: false, // Boton Cancelar de la Nueva Factura
+    dialogInitialItem: false,
+    dialogFinalItem: false,
+    dialogIssue: false,
+    dialogExpired: false,
     InitialCostsDialog: false,
     FinalCostsDialog: false,
     times: ['Anual', 'Mensual', 'Bimensual', 'Trimesnsual', 'Cuatrimensual', 'Semestral', 'Semanal'],
@@ -420,8 +562,8 @@ export default {
       name: '',
       ruc: '', // acepta nulls
       vNominal: '',
-      dIssue: '',
-      dExpiration: '',
+      dIssue: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dExpiration: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       valueIR: '',
       timeIR: '',
       cPeriod: '', // Por default 0, la BD necesita un valor
@@ -433,36 +575,67 @@ export default {
     descFinalCostForm: '',
     costFinalCostForm: 0,
     initialCosts:[
-        {description:'hola', cost: 20.5 },
-        {description:'Siu', cost: 170.5 },
-        {description:'Cuak', cost: 10.00 }
+
     ],
     finalCosts:[
-      {description:'hola', cost: 20.5 },
-      {description:'Siu', cost: 170.5 },
-      {description:'Cuak', cost: 10.00 }
     ]
   }),
   props:[
       'rateType',
       'cashType'
   ],
+  created() {
+    this.sumCosts(this.finalCosts);
+  },
   computed:{
     isNominal(){
       return this.rateType === 'TN';
     },
     isDollar(){
       return this.cashType === '$';
+    },
+    isInitialCosts(){
+      return this.initialCosts.length > 0;
+    },
+    isFinalCosts(){
+      return this.finalCosts.length > 0;
     }
   },
   methods:{
-    addInitialCost(){
-      this.initialCosts.push({description: this.descIniCostForm, cost: this.costIniCostForm})
-      this.InitialCostsDialog = false;
+    moneyFormat(cost){
+      return Number.parseFloat(cost).toFixed(2);
     },
+    addInitialCost(){
+      this.initialCosts.push({description: this.descIniCostForm, cost: this.moneyFormat(this.costIniCostForm)})
+      this.InitialCostsDialog = false;
+      this.descIniCostForm = '';
+      this.costIniCostForm = 0;
+    },
+    deleteInitialCost(item){
+      this.initialCosts = this.initialCosts.filter( e => {
+        return e !== item;
+      });
+      this.dialogInitialItem = false;
+    },
+
     addFinalCost(){
-      this.finalCosts.push({description: this.descFinalCostForm, cost: this.costFinalCostForm})
+      this.finalCosts.push({description: this.descFinalCostForm, cost: Number(this.moneyFormat(this.costFinalCostForm))});
       this.FinalCostsDialog = false;
+      this.descFinalCostForm = '';
+      this.costFinalCostForm = 0;
+    },
+    deleteFinalCost(item){
+      this.finalCosts = this.finalCosts.filter( e => {
+        return e !== item;
+      });
+      this.dialogFinalItem = false;
+    },
+
+    sumCosts(costList){
+      let newList  = costList.map(e => {
+        return e.cost;
+      });
+      console.log(newList.reduce((a, b) => a + b, 0));
     }
   }
 }
