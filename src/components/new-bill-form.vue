@@ -95,6 +95,16 @@
             ></v-select>
 
           </v-list-item>
+          <v-list-item>
+            <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Retención</v-list-item-title>
+            <v-text-field
+                v-model="bill.retention"
+                placeholder="00.00"
+                solo
+                dense
+                :rules="retentionRules"
+            ></v-text-field>
+          </v-list-item>
         </v-list>
       </v-card>
     </v-card>
@@ -104,53 +114,225 @@
 
     <v-card class="mt-sm-6 mt-md-0" min-width="50%" elevation="0">
       <v-card min-width="70%" class="d-flex flex-column mx-sm-12" elevation="0">
-        <p class="text-caption text-sm-h6 font-weight-bold cl-text">Gastos Iniciales</p>
-        <v-list class="list">
+        <v-card-title class="d-flex py-0">
+          <p class="text-caption text-sm-h6 font-weight-bold cl-text mr-5">Gastos Iniciales</p>
+          <v-dialog
+              v-model="InitialCostsDialog"
+              persistent
+              max-width="600px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  icon
+                  color="primary"
+                  small
+                  class="mb-4"
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                <v-icon>mdi-plus-circle</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Agregar gasto inicial</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                    >
+                      <v-text-field
+                          label="Descripción"
+                          required
+                          v-model="descIniCostForm"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                    >
+                      <v-text-field
+                          label="Costo"
+                          required
+                          v-model="costIniCostForm"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                <small>Todos los campos son requeridos</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="error"
+                    text
+                    @click="InitialCostsDialog = false"
+                >
+                  Cerrar
+                </v-btn>
+                <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="addInitialCost"
+                >
+                  Agregar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-card-title>
+        <v-list class="list scroll-box">
+          <v-virtual-scroll
+              :bench="benched"
+              :items="initialCosts"
+              height="130"
+              item-height="35"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item :key="item">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.description }}
+                  </v-list-item-title>
+                </v-list-item-content>
 
-          <v-list-item class="item">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Valor</v-list-item-title>
-            <v-list-item-subtitle class="box-values text-right font-weight-bold text-body-2 py-2 px-4">
-              Hola siu
-            </v-list-item-subtitle>
-          </v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <strong v-if="isDollar">$ {{ item.cost }}</strong>
+                    <strong v-else>S/. {{ item.cost }}</strong>
+                  </v-list-item-title>
+                </v-list-item-content>
 
-          <v-list-item class="item">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Valor</v-list-item-title>
-            <v-list-item-subtitle class="box-values text-right font-weight-bold text-body-2 py-2 px-4">
-              Hola siu
-            </v-list-item-subtitle>
-          </v-list-item>
+                <v-list-item-action>
+                  <v-btn
+                      icon
+                      x-small
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
 
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
         </v-list>
-        <p class="text-caption text-sm-h6 font-weight-bold cl-text">Gastos Finales</p>
-        <v-list class="list">
 
-          <v-list-item class="item">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Valor</v-list-item-title>
-            <v-list-item-subtitle class="box-values text-right font-weight-bold text-body-2 py-2 px-4">
-              Hola siu
-            </v-list-item-subtitle>
-          </v-list-item>
+        <v-card-title class="d-flex my-2 py-0 pt-5">
+          <p class="text-caption text-sm-h6 font-weight-bold cl-text mr-8">Gastos Finales</p>
+          <v-dialog
+              v-model="FinalCostsDialog"
+              persistent
+              max-width="600px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  icon
+                  color="primary"
+                  small
+                  class="mb-4"
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                <v-icon>mdi-plus-circle</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Agregar gasto final</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                    >
+                      <v-text-field
+                          label="Descripción"
+                          required
+                          v-model="descFinalCostForm"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                    >
+                      <v-text-field
+                          label="Costo"
+                          required
+                          v-model="costFinalCostForm"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                <small>Todos los campos son requeridos</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="error"
+                    text
+                    @click="FinalCostsDialog = false"
+                >
+                  Cerrar
+                </v-btn>
+                <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="addFinalCost"
+                >
+                  Agregar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-card-title>
+        <v-list class="list scroll-box">
+          <v-virtual-scroll
+              :bench="benched"
+              :items="finalCosts"
+              height="130"
+              item-height="35"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item :key="item">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.description }}
+                  </v-list-item-title>
+                </v-list-item-content>
 
-          <v-list-item class="item">
-            <v-list-item-title class="text-caption font-weight-bold text-body-2">Valor</v-list-item-title>
-            <v-list-item-subtitle class="box-values text-right font-weight-bold text-body-2 py-2 px-4">
-              Hola siu
-            </v-list-item-subtitle>
-          </v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <strong v-if="isDollar">$ {{ item.cost }}</strong>
+                    <strong v-else>S/. {{ item.cost }}</strong>
+                  </v-list-item-title>
+                </v-list-item-content>
 
+                <v-list-item-action>
+                  <v-btn
+                      icon
+                      x-small
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
         </v-list>
-        <v-list-item class="">
-          <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Retención</v-list-item-title>
-          <v-text-field
-              v-model="bill.retention"
-              placeholder="00.00"
-              solo
-              dense
-          ></v-text-field>
-        </v-list-item>
       </v-card>
-      <v-card-actions class="d-flex justify-center justify-md-end mt-5">
+      <v-card-actions class="d-flex justify-center justify-md-end mt-2">
         <v-dialog
             v-model="dialog"
             persistent
@@ -216,6 +398,8 @@ export default {
   data: () => ({
     newBill: false,
     dialog: false,
+    InitialCostsDialog: false,
+    FinalCostsDialog: false,
     times: ['Anual', 'Mensual', 'Bimensual', 'Trimesnsual', 'Cuatrimensual', 'Semestral', 'Semanal'],
     timesCompounding:['diaria', 'Semanal', 'Mensual'],
     nameRules: [
@@ -229,6 +413,9 @@ export default {
       v => !!v || 'Campo requerido',
       v=> v>=0||'Solo valor numérico'
     ],
+    retentionRules: [
+      v=> v>=0||'Solo valor numérico'
+    ],
     bill:{
       name: '',
       ruc: '', // acepta nulls
@@ -239,7 +426,22 @@ export default {
       timeIR: '',
       cPeriod: '', // Por default 0, la BD necesita un valor
       retention: ''
-    }
+    },
+    benched: 0,
+    descIniCostForm: '',
+    costIniCostForm: 0,
+    descFinalCostForm: '',
+    costFinalCostForm: 0,
+    initialCosts:[
+        {description:'hola', cost: 20.5 },
+        {description:'Siu', cost: 170.5 },
+        {description:'Cuak', cost: 10.00 }
+    ],
+    finalCosts:[
+      {description:'hola', cost: 20.5 },
+      {description:'Siu', cost: 170.5 },
+      {description:'Cuak', cost: 10.00 }
+    ]
   }),
   props:[
       'rateType',
@@ -248,6 +450,19 @@ export default {
   computed:{
     isNominal(){
       return this.rateType === 'TN';
+    },
+    isDollar(){
+      return this.cashType === '$';
+    }
+  },
+  methods:{
+    addInitialCost(){
+      this.initialCosts.push({description: this.descIniCostForm, cost: this.costIniCostForm})
+      this.InitialCostsDialog = false;
+    },
+    addFinalCost(){
+      this.finalCosts.push({description: this.descFinalCostForm, cost: this.costFinalCostForm})
+      this.FinalCostsDialog = false;
     }
   }
 }
@@ -260,6 +475,9 @@ export default {
 .box-values {
   background: white;
   border-radius: 15px;
+}
+.scroll-box{
+  margin-top: -20px;
 }
 p {
   color: #1361af;
