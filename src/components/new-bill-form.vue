@@ -33,7 +33,7 @@
             <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Valor Nominal</v-list-item-title>
             <v-text-field
                 v-model="bill.vNominal"
-                placeholder="S/. 1500.00"
+                :placeholder="[this.isDollar ? '$ 1500.00':'S/. 1500.00']"
                 solo
                 dense
                 required
@@ -166,7 +166,7 @@
             <v-list-item-title class="text-caption font-weight-bold text-body-2 pb-5">Retención</v-list-item-title>
             <v-text-field
                 v-model="bill.retention"
-                placeholder="00.00"
+                :placeholder="this.isDollar? '$ 10.00' : 'S/. 10.00'"
                 solo
                 dense
                 :rules="retentionRules"
@@ -524,11 +524,12 @@
       </v-card-actions>
     </v-card>
 
-
   </v-form>
 </template>
 
 <script>
+import BillCalculator from "../services/BillCalculator";
+
 export default {
   name: "new-bill-form",
   data: () => ({
@@ -585,6 +586,7 @@ export default {
       'cashType'
   ],
   created() {
+    this.testCalculator();
     this.sumCosts(this.finalCosts);
   },
   computed:{
@@ -636,6 +638,10 @@ export default {
         return e.cost;
       });
       console.log(newList.reduce((a, b) => a + b, 0));
+    },
+    testCalculator(){
+      let ala = new BillCalculator(29500, 90, 'TN');
+      ala.saveBill();
     }
   }
 }
