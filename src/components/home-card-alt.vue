@@ -1,5 +1,5 @@
 <template>
-  <v-card class="hola bg py-12 mx-auto d-flex flex-column text-center align-center"
+  <v-card class="bg py-12 mx-auto d-flex flex-column text-center align-center"
           width="500"
           max-height="320"
           elevation="0"
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style scoped>
-.hola{
+.bg{
   background-color: #F9F9F9;
 }
 </style>

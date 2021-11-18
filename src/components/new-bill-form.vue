@@ -2,6 +2,7 @@
   <v-form
       v-model="newBill"
       class="d-md-flex  mx-auto"
+      @submit.prevent="handleNewBill"
   >
     <!-- Columna de la izquierda -->
     <v-card min-width="50%" elevation="0">
@@ -529,6 +530,8 @@
 
 <script>
 import BillCalculator from "../services/BillCalculator";
+import InterestRatesApiService from "../services/interest-rates-api.service";
+import BillsApiService from "../services/bills-api.service";
 
 export default {
   name: "new-bill-form",
@@ -543,8 +546,8 @@ export default {
     dialogExpired: false,
     InitialCostsDialog: false,
     FinalCostsDialog: false,
-    times: ['Anual', 'Mensual', 'Bimensual', 'Trimesnsual', 'Cuatrimensual', 'Semestral', 'Semanal'],
-    timesCompounding:['diaria', 'Semanal', 'Mensual'],
+    times: ['Anual', 'Mensual', 'Bimestral', 'Trimestral', 'Cuatrimestrual', 'Semestral', 'Semanal'],
+    timesCompounding:['Diaria', 'Semanal', 'Mensual'],
     nameRules: [
       v => !!v || 'Nombre requerido',
       v => v.length <= 100 || 'El nombre es muy extenso'
@@ -585,10 +588,6 @@ export default {
       'rateType',
       'cashType'
   ],
-  created() {
-    this.testCalculator();
-    this.sumCosts(this.finalCosts);
-  },
   computed:{
     isNominal(){
       return this.rateType === 'TN';
@@ -604,8 +603,9 @@ export default {
     }
   },
   methods:{
+    // Supports
     moneyFormat(cost){
-      return Number.parseFloat(cost).toFixed(2);
+      return parseFloat(cost).toFixed(2);
     },
     addInitialCost(){
       this.initialCosts.push({description: this.descIniCostForm, cost: this.moneyFormat(this.costIniCostForm)})
@@ -635,13 +635,111 @@ export default {
 
     sumCosts(costList){
       let newList  = costList.map(e => {
-        return e.cost;
+        return parseFloat(e.cost);
       });
-      console.log(newList.reduce((a, b) => a + b, 0));
+      return newList.reduce((a, b) => a + b, 0);
     },
-    testCalculator(){
-      let ala = new BillCalculator(29500, 90, 'TN');
-      ala.saveBill();
+    convertTypeRate(rate){
+      if (rate === 'TN')
+        return "NOMINAL";
+      if (rate === 'TE')
+        return "EFECTIVA";
+    },
+    convertToCoin(coin){
+      if (coin === '$')
+        return "DOLARES";
+      if (coin === 'S/.')
+        return "SOLES";
+    },
+    convertDates(date){
+      switch (date) {
+        case 'Diaria':
+          return 1;
+        case 'Semanal':
+          return 7;
+        case 'Mensual':
+          return 30;
+        case 'Bimestral':
+          return 60;
+        case 'Trimestral':
+          return 90;
+        case 'Cuatrimestrual':
+          return 120;
+        case 'Semestral':
+          return 180;
+        case 'Anual':
+          return 360;
+        default:
+          return 0;
+      }
+    },
+    findTime(){
+      let init = new Date(this.bill.dIssue).getTime();
+      let fin = new Date(this.bill.dExpiration).getTime();
+      return parseInt((fin - init)/(1000*60*60*24));
+    },
+    getRetention(){
+      if(this.bill.retention !== ''){
+        return this.moneyFormat(parseFloat(this.bill.retention));
+      }
+      else {
+        return 0
+      }
+    },
+    getInterestRate(){
+      return {
+        'type': this.convertTypeRate(this.rateType),
+        'rateTime': this.convertDates(this.bill.timeIR),
+        'compoundingPeriod': this.convertDates(this.bill.cPeriod)
+      }
+    },
+    getUser(){
+      return this.$store.state.auth.user;
+    },
+    convertToBill(){
+      let billCalculator = new BillCalculator(parseFloat(this.bill.vNominal), this.findTime(),
+          this.rateType, parseFloat(this.bill.valueIR), this.convertDates(this.bill.timeIR), this.convertDates(this.bill.cPeriod),
+          this.sumCosts(this.initialCosts), this.sumCosts(this.finalCosts));
+      billCalculator.saveBill();
+      return {
+        "name": this.bill.name,
+        "ruc": parseFloat(this.bill.ruc),
+        "issue": this.bill.dIssue,
+        "expiration": this.bill.dExpiration,
+        "currency": this.convertToCoin(this.cashType),
+        "ratePercentage": parseFloat(this.bill.valueIR),
+        "nominalValue": parseFloat(this.moneyFormat(parseFloat(this.bill.vNominal))),
+        "initialExpenses": this.sumCosts(this.initialCosts),
+        "finalExpenses": this.sumCosts(this.finalCosts),
+        "retention": parseFloat(this.getRetention()),
+        "tcea": parseFloat(billCalculator.tcea.toFixed(7)),
+        "netWorth": billCalculator.netValue,
+        "deliveredValue": billCalculator.deliveredValue,
+        "receivedValue": billCalculator.receivedValue
+      }
+    },
+    handleNewBill(){
+      console.log(this.getInterestRate());
+      InterestRatesApiService.create(this.getInterestRate())
+      .then(response => {
+        let idRate = response.data.id;
+        BillsApiService.create(this.getUser().userId, idRate, this.convertToBill())
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => { console.log(err)} );
+        console.log("Rpta2",response);
+      })
+      .catch(error => { console.log(error)} );
+      // redireccionar a home
+
+      //TODO: el home debe leer las bills del usuario
+      //TODO: probar más casos de creacion de bills (TNA -> OK)
+      //TODO: añadir retention a la calculadora de bill
+      //TODO: ver detalles de una bill
+      //TODO: eliminar una bill
+      //TODO: flujo de la app y toolbar de Logueado
+      //TODO: Paginación del Home
     }
   }
 }

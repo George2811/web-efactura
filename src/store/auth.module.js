@@ -4,19 +4,15 @@ const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
     ? {status: { loggedIn: true }, user}
     :{ status: { loggedIn: false }, user: null };
-const person = {};
+
 export const auth = {
     namespaced: true,
-    state: {
-        initialState,
-        person
-    },
+    state: initialState,
     actions: {
         login({commit}, user) {
             return AuthService.login(user).then(
                 user => {
                     commit('loginSuccess', user);
-                    //commit('loggedPerson', assignedPerson);
                     return Promise.resolve(user);
                 },
                 error => {
@@ -38,33 +34,26 @@ export const auth = {
                     commit('registerFailure');
                     return Promise.reject(error);
                 });
-        },
-        savePerson({commit}, loggedPerson){
-            commit('loggedPerson', loggedPerson);
-            localStorage.setItem('person',JSON.stringify(loggedPerson));
         }
     },
     mutations:{
         loginSuccess(state, user){
-            state.initialState.status.loggedIn = true;
-            state.initialState.user = user;
+            state.status.loggedIn = true;
+            state.user = user;
         },
         loginFailure(state){
-            state.initialState.status.loggedIn = false;
-            state.initialState.user = null;
+            state.status.loggedIn = false;
+            state.user = null;
         },
         logout(state){
-            state.initialState.status.loggedIn = false;
-            state.initialState.user = null;
+            state.status.loggedIn = false;
+            state.user = null;
         },
         registerSuccess(state){
-            state.initialState.status.loggedIn = false;
+            state.status.loggedIn = false;
         },
         registerFailure(state){
-            state.initialState.status.loggedIn = false;
-        },
-        loggedPerson(state, payload){
-            state.person = payload;
+            state.status.loggedIn = false;
         }
     }
 }

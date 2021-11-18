@@ -11,11 +11,12 @@ class AuthService{
             {headers: {'Content-Type': 'application/json'}})
             .then(function (response){
                 console.log(`Response arrived with status ${response.status}`);
+                console.log(response)
                 if (response.data.token){
-                    console.log(`user: ${response.data}`);
+                    console.log(`user: ${response.data.userId}`);
                     localStorage.setItem('user', JSON.stringify(response.data));
                 }
-                return response.data.id;
+                return response.data.userId;
             })
             .catch(function (error){
                 if (error.response){

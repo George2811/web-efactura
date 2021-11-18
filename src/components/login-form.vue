@@ -51,9 +51,9 @@ export default {
     ],
     passwordRules: [
       v => !!v || 'Contraseña requerida',
-      v => v.length >= 6 || 'La contraseña contiene menos de 6 caracteres',
+      /*v => v.length >= 6 || 'La contraseña contiene menos de 6 caracteres',
       (value) => (value && /\d/.test(value)) || 'La contraseña debe contener al menos un número',
-      (value) => (value && /[a-z]{1}/.test(value)) || 'La contraseña debe contener al menos una letra'
+      (value) => (value && /[a-z]{1}/.test(value)) || 'La contraseña debe contener al menos una letra'*/
     ],
     user: {
       username: '',
@@ -61,18 +61,19 @@ export default {
     }
   }),
   methods: {
-    sendForm(){
-      this.user.username = this.email;
+    setUser(){
+      this.user.username = this.username;
       this.user.password = this.password;
       console.log(this.user);
     },
     handleLogin() {
-      this.sendForm();
+      this.setUser();
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/login', this.user).then(
             (userId) => {
               console.log('Logged In ' + userId);
-              //this.goToRoute(userId);
+              //console.log(this.$store.state);
+              this.$router.push('/');
             },
             error => {
               console.log('The login failed' + error.response);
