@@ -6,19 +6,35 @@
       elevation="2"
   >
     <v-card-text>
-      <p class="my-0 text-h6 title">Factura-1</p>
+      <p class="my-0 text-h6 title">{{bill.name}}</p>
 
       <v-list>
-        <v-list-item
-            v-for="item in values"
-            :key="item.day"
-            class="item"
-        >
-          <v-list-item-title class="text-caption">{{ item.type }}</v-list-item-title>
+        <v-list-item class="item">
+
+          <v-list-item-title class="text-caption">Valor Nominal</v-list-item-title>
 
           <v-list-item-subtitle class="text-right">
-            {{ item.symbol }} {{ item.temp }}
+            {{ this.moneyFormat(bill.currency) }} {{ bill.nominalValue }}
           </v-list-item-subtitle>
+        </v-list-item>
+
+        <v-list-item class="item">
+
+          <v-list-item-title class="text-caption">Fecha vencimiento</v-list-item-title>
+
+          <v-list-item-subtitle class="text-right">
+            {{ this.convertDate(bill.expiration) }}
+          </v-list-item-subtitle>
+
+        </v-list-item>
+
+        <v-list-item class="item">
+
+          <v-list-item-title class="text-caption">Tasa</v-list-item-title>
+          <v-list-item-subtitle class="text-right">
+            {{ bill.ratePercentage }} %
+          </v-list-item-subtitle>
+
         </v-list-item>
       </v-list>
 
@@ -28,14 +44,14 @@
         <v-list-item>
           <v-list-item-title class="font-weight-bold text-body-2">TCEA</v-list-item-title>
           <v-list-item-subtitle class="text-right font-weight-bold text-body-2">
-            20.5 %
+            {{ bill.tcea }} %
           </v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item class="item">
-          <v-list-item-title class="font-weight-bold text-body-2">Monto a pagar</v-list-item-title>
+          <v-list-item-title class="font-weight-bold text-body-2">Valor Neto</v-list-item-title>
           <v-list-item-subtitle class="text-right font-weight-bold text-body-2">
-            S/. 1500
+            {{ this.moneyFormat(bill.currency) }} {{ bill.netWorth }}
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
@@ -92,7 +108,7 @@
           x-small
           color="primary"
           class="text-lowercase text-body-1 ml-4 mr-3"
-          to="/detail"
+          :to="goToBill"
       >
         i
       </v-btn>
@@ -106,12 +122,25 @@ export default {
   name: "bill-card",
   data: () => ({
     dialog: false,
-    values: [
-      { type: 'Valor Nominal', symbol: 'S/. ', temp: '975.00' },
-      { type: 'Fecha vencimiento', symbol: '', temp: '22/10/22' },
-      { type: 'Tipo de tasa', symbol: '', temp: 'TNA' },
-    ],
-  })
+  }),
+  props:[
+      'bill'
+  ],
+  computed:{
+    goToBill(){return `/bills/${this.bill.id}`}
+  },
+  methods:{
+    moneyFormat(coin){
+      if(coin === "SOLES")
+        return 'S/.'
+      if(coin === "DOLARES")
+        return '$'
+    },
+    convertDate(date){
+      let stringDate = new Date(date);
+      return `${stringDate.getUTCDate()}/${stringDate.getMonth()+1}/${stringDate.getFullYear()}`
+    }
+  }
 }
 </script>
 

@@ -13,11 +13,11 @@
       >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <p class="text-h6 d-inline-flex text-sm-h5 ml-3 mt-2 font-weight-bold cl-text">Detalle Factura-1</p>
+      <p class="text-h6 d-inline-flex text-sm-h5 ml-3 mt-2 font-weight-bold cl-text">Detalle {{ this.bill.name }}</p>
       <v-spacer></v-spacer>
       <p class="d-inline-flex text-caption text-sm-h6 py-1 mt-2">TCEA: </p>
 
-      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> 24.556498%</p>
+      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> {{ this.bill.tcea }}%</p>
 
     </v-card>
 
@@ -26,7 +26,17 @@
         max-width="1200" height="fit" elevation="5"
     >
       <div class="d-sm-flex justify-space-around sub-div">
-        <result-details></result-details>
+
+        <div
+            class="d-md-flex mx-auto"
+            v-if="loading"
+        >
+          <v-progress-circular
+              indeterminate
+              color="primary"
+          ></v-progress-circular>
+        </div>
+        <result-details v-else :bill="bill" :rate="rate"></result-details>
       </div>
 
     </v-card>
@@ -35,16 +45,49 @@
 
 <script>
 import ResultDetails from '@/components/result-details.vue'
+import BillsApiService from "@/services/bills-api.service";
+import InterestRatesApiService from "@/services/interest-rates-api.service";
 
 export default {
   name: "Detail",
+  data: () => ({
+    loading: true,
+    bill: {},
+    rate: {}
+  }),
   components: {
     ResultDetails
   },
   computed:{
     goToHome(){
       return '/';
+    },
+    getBillId(){
+      return this.$route.params.billId;
     }
+  },
+  methods:{
+    getUser(){
+      return this.$store.state.auth.user;
+    },
+    retrieveBillAndRate(){
+      console.log(this.getBillId);
+      BillsApiService.getByUserIdAndBillId(this.getUser().userId, this.getBillId)
+          .then(response => {
+            this.bill = response.data;
+            InterestRatesApiService.getByInterestId(this.bill.interestRateId)
+            .then(res => {
+              this.rate = res.data;
+              this.loading = false;
+            })
+            .catch(err => {
+              console.log(err);})
+          })
+          .catch(error => { console.log(error) });
+    }
+  },
+  created() {
+    this.retrieveBillAndRate();
   }
 }
 </script>

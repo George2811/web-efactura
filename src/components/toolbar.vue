@@ -5,10 +5,10 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn text class="text-capitalize" to="/login" v-if="!logged">
+      <v-btn text class="text-capitalize" to="/login" v-if="!isLogged">
         Iniciar Sesión
       </v-btn>
-      <v-btn text class="text-capitalize" to="/register" v-if="!logged">
+      <v-btn text class="text-capitalize" to="/register" v-if="!isLogged">
         Registrarse
       </v-btn>
 
@@ -30,7 +30,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-title>
-              <v-btn text class="text-capitalize">
+              <v-btn text class="text-capitalize" @click="handleLogout">
                 <v-icon>mdi-logout</v-icon> Cerrar Sesión
               </v-btn>
             </v-list-item-title>
@@ -47,7 +47,26 @@ export default {
   name: "toolbar",
   data(){
     return{
-      logged: false
+      logged: !this.$store.state.auth.status,
+    }
+  },
+  computed:{
+    isLogged(){
+      return this.$store.state.auth.status;
+    },
+  },
+  methods:{
+    handleLogout(){
+      this.$store.dispatch('auth/logout')
+          .then((userId) => {
+            console.log('Logged Out '+ userId);
+            //this.$store.state.auth.person = null;
+            localStorage.removeItem('user');
+            this.$router.push('/login');
+          })
+          .catch(error => {
+            console.log('The logout failed'+error.response.data);
+          });
     }
   }
 }

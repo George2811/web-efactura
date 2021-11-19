@@ -24,10 +24,16 @@
         class="mx-4 mx-sm-auto my-6 px-8 py-12 board-part"
         max-width="1200" height="fit" elevation="5"
     >
-      <div class="d-sm-flex justify-space-around sub-div" v-if="existBills">
-        <bill-card v-for="(a, i) in bills" :key="i"></bill-card>
+      <div class="d-sm-flex justify-space-around sub-div" v-if="loading">
+        <v-progress-circular
+            indeterminate
+            color="primary"
+        ></v-progress-circular>
       </div>
-      <div class="d-sm-flex justify-space-around sub-div" v-else>
+      <div class="d-sm-flex justify-space-around sub-div" v-if="existBills">
+        <bill-card v-for="(bill, i) in bills" :key="i" :bill="bill"></bill-card>
+      </div>
+      <div class="d-sm-flex justify-space-around sub-div" v-if="!existBills && !loading">
           <HomeAlt></HomeAlt>
       </div>
 
@@ -43,9 +49,9 @@
 </template>
 
 <script>
-import BillCard from '@/components/bill-card.vue'
 import BillsApiService from "@/services/bills-api.service";
-import UserApiService from "@/services/user-api.service"
+
+import BillCard from '@/components/bill-card.vue'
 import HomeAlt from '../components/home-card-alt.vue'
 
 export default {
@@ -57,7 +63,9 @@ export default {
   data: () => ({
     page: 1,
     data : [1,2,3],
-    bills : []
+    loading: true,
+    bills : [],
+    userId: 0,
   }),
   computed:{
     existBills(){
@@ -66,30 +74,23 @@ export default {
   },
   methods:{
     getUser(){
-      return this.$store.state.auth.user;
+      this.userId = this.$store.state.auth.user;
     },
-    getBills(){
-      BillsApiService.getAllByUserId(this.getUser().userId)
-      .then(response => {
-        console.log(response);
-        this.bills = response.data.content;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    },
-    getUsers(){
-      UserApiService.getAll()
-      .then(response => {
-        console.log(response);
-      })
-      .catch(err => { console.log(err)});
+    retrieveBills(){
+      console.log(this.userId);
+      BillsApiService.getAllByUserId(this.userId)//.userId
+          .then(response => {
+            this.loading = false;
+            this.bills = response.data.content;
+          })
+          .catch(err => {
+            console.log(err);
+          });
     }
   },
   created() {
-    //console.log(this.getUser().userId);
-    //this.getUsers();
-    this.getBills();
+    this.getUser();
+    this.retrieveBills();
   }
 }
 </script>

@@ -733,12 +733,12 @@ export default {
       .catch(error => { console.log(error)} );
       // redireccionar a home
 
-      //TODO: el home debe leer las bills del usuario
+      // el home debe leer las bills del usuario
       //TODO: probar más casos de creacion de bills (TNA -> OK)
       //TODO: añadir retention a la calculadora de bill
-      //TODO: ver detalles de una bill
+      // ver detalles de una bill
       //TODO: eliminar una bill
-      //TODO: flujo de la app y toolbar de Logueado
+      //TODO: flujo de la app y toolbar de Logueado (arreglar)
       //TODO: Paginación del Home
     }
   }
