@@ -13,6 +13,7 @@
     <v-form
         v-model="register"
         class="d-flex flex-column"
+        @submit.prevent="handleRegister"
     >
       <v-text-field
           v-model="username"
@@ -91,17 +92,18 @@ export default {
     }
   },
   methods: {
-    sendForm(){
-      this.user.username = this.email;
+    setUser(){
+      this.user.username = this.username;
       this.user.password = this.password;
       console.log(this.user);
     },
     handleRegister() {
-      this.sendForm();
+      this.setUser();
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/register', this.user).then(
             (userId) => {
               console.log('Register In ' + userId);
+              this.handleLogin(this.user);
               //this.goToRoute(userId);
             },
             error => {
@@ -109,6 +111,19 @@ export default {
             }
         );
       }
+    },
+    handleLogin(newUser) {
+      this.$store.dispatch('auth/login', newUser).then(
+          (userId) => {
+            console.log('Logged In ' + userId);
+            //console.log(this.$store.state);
+            this.$router.push('/');
+          },
+          error => {
+            console.log('The login failed' + error.response);
+          }
+      );
+
     }
   }
 }

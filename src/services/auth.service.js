@@ -19,7 +19,8 @@ class AuthService{
                 return response.data.userId;
             })
             .catch(function (error){
-                if (error.response){
+                throw error;
+                /*if (error.response){
                     console.log(error.response.status);
                     console.log(error.response.data);
                     console.log(error.response.headers);
@@ -29,7 +30,7 @@ class AuthService{
                     console.log(error.message);
                 }
                 console.log(error.config);
-                return error;
+                return error;*/
             });
     }
     logout(){

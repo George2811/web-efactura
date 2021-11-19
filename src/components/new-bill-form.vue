@@ -738,6 +738,7 @@ export default {
         BillsApiService.create(this.userId, idRate, this.convertToBill())
         .then(res => {
           console.log(res);
+          this.$router.push('/');
         })
         .catch(err => { console.log(err)} );
         console.log("Rpta2",response);
@@ -752,7 +753,6 @@ export default {
       // eliminar una bill
       // flujo de la app y toolbar de Logueado (arreglar)
       //TODO: Paginación del Home
-      //TODO: peticion de registro de usuario
     },
     testear(){
       console.log(this.getInterestRate());

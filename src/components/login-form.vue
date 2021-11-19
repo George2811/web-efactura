@@ -34,7 +34,6 @@
         Iniciar Sesión
       </v-btn>
     </v-form>
-
   </v-card>
 </template>
 
@@ -76,7 +75,8 @@ export default {
               this.$router.push('/');
             },
             error => {
-              console.log('The login failed' + error.response);
+              console.log('The login failed ' + error);
+              this.$emit('loginFailed');
             }
         );
       }
