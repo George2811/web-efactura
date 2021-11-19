@@ -47,12 +47,12 @@ export default {
   name: "toolbar",
   data(){
     return{
-      logged: !this.$store.state.auth.status,
+      //logged: !this.$store.state.auth.status,
     }
   },
   computed:{
     isLogged(){
-      return this.$store.state.auth.status;
+      return this.$store.state.auth.status.loggedIn;
     },
   },
   methods:{

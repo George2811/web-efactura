@@ -2,7 +2,7 @@
   <v-form
       v-model="newBill"
       class="d-md-flex  mx-auto"
-      @submit.prevent="handleNewBill"
+      @submit.prevent="testear"
   >
     <!-- Columna de la izquierda -->
     <v-card min-width="50%" elevation="0">
@@ -573,6 +573,7 @@ export default {
       cPeriod: '', // Por default 0, la BD necesita un valor
       retention: ''
     },
+    userId: 0,
     benched: 0,
     descIniCostForm: '',
     costIniCostForm: 0,
@@ -673,6 +674,17 @@ export default {
           return 0;
       }
     },
+    formatCompounding(date){
+      if(this.rateType === 'TN' && this.convertDates(date) === 0){
+        return 1
+      }
+      else if(this.rateType === 'TE'){
+        return 0
+      }
+      else{
+        return this.convertDates(date);
+      }
+    },
     findTime(){
       let init = new Date(this.bill.dIssue).getTime();
       let fin = new Date(this.bill.dExpiration).getTime();
@@ -680,7 +692,7 @@ export default {
     },
     getRetention(){
       if(this.bill.retention !== ''){
-        return this.moneyFormat(parseFloat(this.bill.retention));
+        return parseFloat(this.moneyFormat(parseFloat(this.bill.retention)));
       }
       else {
         return 0
@@ -690,16 +702,16 @@ export default {
       return {
         'type': this.convertTypeRate(this.rateType),
         'rateTime': this.convertDates(this.bill.timeIR),
-        'compoundingPeriod': this.convertDates(this.bill.cPeriod)
+        'compoundingPeriod': this.formatCompounding(this.bill.cPeriod)
       }
     },
     getUser(){
-      return this.$store.state.auth.user;
+      this.userId = this.$store.state.auth.user;
     },
     convertToBill(){
       let billCalculator = new BillCalculator(parseFloat(this.bill.vNominal), this.findTime(),
           this.rateType, parseFloat(this.bill.valueIR), this.convertDates(this.bill.timeIR), this.convertDates(this.bill.cPeriod),
-          this.sumCosts(this.initialCosts), this.sumCosts(this.finalCosts));
+          this.sumCosts(this.initialCosts), this.sumCosts(this.finalCosts), this.getRetention());
       billCalculator.saveBill();
       return {
         "name": this.bill.name,
@@ -723,7 +735,7 @@ export default {
       InterestRatesApiService.create(this.getInterestRate())
       .then(response => {
         let idRate = response.data.id;
-        BillsApiService.create(this.getUser().userId, idRate, this.convertToBill())
+        BillsApiService.create(this.userId, idRate, this.convertToBill())
         .then(res => {
           console.log(res);
         })
@@ -734,13 +746,21 @@ export default {
       // redireccionar a home
 
       // el home debe leer las bills del usuario
-      //TODO: probar más casos de creacion de bills (TNA -> OK)
-      //TODO: añadir retention a la calculadora de bill
+      //TODO: probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
+      //TODO: añadir capitalizacion, SOLO encuentra diaria por ahora
+      // añadir retention a la calculadora de bill
       // ver detalles de una bill
       //TODO: eliminar una bill
-      //TODO: flujo de la app y toolbar de Logueado (arreglar)
+      // flujo de la app y toolbar de Logueado (arreglar)
       //TODO: Paginación del Home
+    },
+    testear(){
+      console.log(this.getInterestRate());
+      console.log(this.convertToBill());
     }
+  },
+  created() {
+    this.getUser();
   }
 }
 </script>

@@ -52,6 +52,7 @@ export default {
   name: "Detail",
   data: () => ({
     loading: true,
+    userId: 0,
     bill: {},
     rate: {}
   }),
@@ -68,11 +69,11 @@ export default {
   },
   methods:{
     getUser(){
-      return this.$store.state.auth.user;
+      this.userId = this.$store.state.auth.user;
     },
     retrieveBillAndRate(){
       console.log(this.getBillId);
-      BillsApiService.getByUserIdAndBillId(this.getUser().userId, this.getBillId)
+      BillsApiService.getByUserIdAndBillId(this.userId, this.getBillId)
           .then(response => {
             this.bill = response.data;
             InterestRatesApiService.getByInterestId(this.bill.interestRateId)
@@ -87,6 +88,7 @@ export default {
     }
   },
   created() {
+    this.getUser();
     this.retrieveBillAndRate();
   }
 }

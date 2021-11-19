@@ -3,13 +3,14 @@ export default class BillCalculator{
 
     //Efectiva
     constructor(nv, time, type = 'TE', ratePercent = 25.7, rateTimeType = 360, capitalization = 0,
-                iniCosts = 200, finalCosts = 158.5) {
+                iniCosts = 200, finalCosts = 158.5, retention = 0) {
         this.nominalValue = nv;
         this.time = time;
         this.type = type;
         this.ratePercent = ratePercent;
         this.rateTimeType = rateTimeType;
         this.capitalization = capitalization;
+        this.retention = retention;
 
         this.initialCosts = iniCosts;
         this.finalCosts = finalCosts;
@@ -26,6 +27,9 @@ export default class BillCalculator{
 
     }
 
+    /*toCapitalization(){
+        this.capitalization
+    }*/
     toPercent(val){
         return val/100;
     }
@@ -47,11 +51,11 @@ export default class BillCalculator{
         return this.netValue;
     }
     findReceivedValue(){
-        this.receivedValue = this.netValue - this.initialCosts;
+        this.receivedValue = this.netValue - this.initialCosts - this.retention;
         return this.receivedValue;
     }
     findDeliveredValue(){
-        this.deliveredValue = this.nominalValue + this.finalCosts;
+        this.deliveredValue = this.nominalValue + this.finalCosts + this.retention;
         return this.deliveredValue;
     }
     findTcea(){
