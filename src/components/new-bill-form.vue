@@ -2,7 +2,7 @@
   <v-form
       v-model="newBill"
       class="d-md-flex  mx-auto"
-      @submit.prevent="testear"
+      @submit.prevent="handleNewBill"
   >
     <!-- Columna de la izquierda -->
     <v-card min-width="50%" elevation="0">
@@ -706,7 +706,7 @@ export default {
       }
     },
     getUser(){
-      this.userId = this.$store.state.auth.user;
+      this.userId = JSON.parse(localStorage.getItem('user')).userId;
     },
     convertToBill(){
       let billCalculator = new BillCalculator(parseFloat(this.bill.vNominal), this.findTime(),
@@ -747,12 +747,12 @@ export default {
 
       // el home debe leer las bills del usuario
       //TODO: probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
-      //TODO: añadir capitalizacion, SOLO encuentra diaria por ahora
       // añadir retention a la calculadora de bill
       // ver detalles de una bill
-      //TODO: eliminar una bill
+      // eliminar una bill
       // flujo de la app y toolbar de Logueado (arreglar)
       //TODO: Paginación del Home
+      //TODO: peticion de registro de usuario
     },
     testear(){
       console.log(this.getInterestRate());

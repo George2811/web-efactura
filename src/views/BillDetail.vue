@@ -69,7 +69,7 @@ export default {
   },
   methods:{
     getUser(){
-      this.userId = this.$store.state.auth.user;
+      this.userId = JSON.parse(localStorage.getItem('user')).userId;
     },
     retrieveBillAndRate(){
       console.log(this.getBillId);

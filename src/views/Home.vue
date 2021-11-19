@@ -31,7 +31,7 @@
         ></v-progress-circular>
       </div>
       <div class="d-sm-flex justify-space-around sub-div" v-if="existBills">
-        <bill-card v-for="(bill, i) in bills" :key="i" :bill="bill"></bill-card>
+        <bill-card v-for="(bill, i) in bills" :key="i" :bill="bill" @update="retrieveBills"></bill-card>
       </div>
       <div class="d-sm-flex justify-space-around sub-div" v-if="!existBills && !loading">
           <HomeAlt></HomeAlt>
@@ -74,7 +74,7 @@ export default {
   },
   methods:{
     getUser(){
-      this.userId = this.$store.state.auth.user;
+      this.userId = JSON.parse(localStorage.getItem('user')).userId;
     },
     retrieveBills(){
       console.log(this.userId);

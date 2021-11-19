@@ -95,7 +95,7 @@
                 color="error"
                 class="text-capitalize"
                 text
-                @click="dialog = false"
+                @click="deleteBill"
             >
               Sí, eliminar
             </v-btn>
@@ -118,6 +118,8 @@
 </template>
 
 <script>
+import BillsApiService from "@/services/bills-api.service"
+
 export default {
   name: "bill-card",
   data: () => ({
@@ -129,17 +131,31 @@ export default {
   computed:{
     goToBill(){return `/bills/${this.bill.id}`}
   },
-  methods:{
-    moneyFormat(coin){
-      if(coin === "SOLES")
+  methods: {
+    moneyFormat(coin) {
+      if (coin === "SOLES")
         return 'S/.'
-      if(coin === "DOLARES")
+      if (coin === "DOLARES")
         return '$'
     },
-    convertDate(date){
+    convertDate(date) {
       let stringDate = new Date(date);
-      return `${stringDate.getUTCDate()}/${stringDate.getMonth()+1}/${stringDate.getFullYear()}`
+      return `${stringDate.getUTCDate()}/${stringDate.getMonth() + 1}/${stringDate.getFullYear()}`
+    },
+    deleteBill() {
+      BillsApiService.delete(this.bill.userId, this.bill.id)
+      .then(response => {
+        this.dialog = false;
+        console.log(response);
+        this.$emit('update');
+      })
+      .catch( error => {
+        console.log(error);
+      });
     }
+  },
+  created() {
+    console.log(this.bill);
   }
 }
 </script>

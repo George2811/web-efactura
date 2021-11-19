@@ -9,7 +9,7 @@
           Usted no cuenta con facturas.
         </div>
         <div class="text--primary py-10">
-          Registra tu primera factura :)
+          Registra tu primera factura  :)
         </div>
         <v-divider></v-divider>
       </v-card-text>
@@ -18,6 +18,7 @@
           depressed
           color="primary"
           class="text-capitalize"
+          to="/new-bill"
       >
         Añadir factura +
       </v-btn>
