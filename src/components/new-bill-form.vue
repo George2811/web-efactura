@@ -507,7 +507,7 @@
                   class="text-capitalize"
                   text
                   @click="dialog = false"
-                  to="/"
+                  to="/home"
               >
                 Sí, cancelar
               </v-btn>
@@ -520,7 +520,14 @@
             class="mx-12 d-inline-block"
             type="submit"
         >
-          Guardar
+          <div v-if="!savingBill">Guardar</div>
+          <v-progress-circular
+              v-else
+              indeterminate
+              color="white"
+              class="mx-5"
+          ></v-progress-circular>
+
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -536,6 +543,7 @@ import BillsApiService from "../services/bills-api.service";
 export default {
   name: "new-bill-form",
   data: () => ({
+    savingBill:false,
     modalDIssue: false,
     modalDExpired: false,
     newBill: false,
@@ -731,22 +739,23 @@ export default {
       }
     },
     handleNewBill(){
-      console.log(this.getInterestRate());
+      this.savingBill = true;
       InterestRatesApiService.create(this.getInterestRate())
       .then(response => {
         let idRate = response.data.id;
         BillsApiService.create(this.userId, idRate, this.convertToBill())
         .then(res => {
           console.log(res);
-          this.$router.push('/');
+          this.$router.push('/home');
         })
         .catch(err => { console.log(err)} );
         console.log("Rpta2",response);
+        this.savingBill = false;
       })
-      .catch(error => { console.log(error)} );
-      // redireccionar a home
-
-      // el home debe leer las bills del usuario
+      .catch(error => {
+        console.log(error);
+        this.savingBill = false;
+      });
       //TODO: probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
       // añadir retention a la calculadora de bill
       // ver detalles de una bill

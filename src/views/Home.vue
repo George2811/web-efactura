@@ -80,7 +80,7 @@ export default {
       this.userId = JSON.parse(localStorage.getItem('user')).userId;
     },
     retrieveBills(){
-      console.log(this.userId);
+      this.page = 1;
       BillsApiService.getAllByUserId(this.userId)//.userId
           .then(response => {
             this.loading = false;

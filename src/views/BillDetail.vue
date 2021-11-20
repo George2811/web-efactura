@@ -61,7 +61,7 @@ export default {
   },
   computed:{
     goToHome(){
-      return '/';
+      return '/home';
     },
     getBillId(){
       return this.$route.params.billId;

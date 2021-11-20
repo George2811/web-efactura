@@ -9,7 +9,7 @@
           text
           icon
           color="primary"
-          to="/"
+          to="/home"
       >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>

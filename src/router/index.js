@@ -8,8 +8,9 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
+    meta:{protected: true},
     component: Home
   },
   {
@@ -25,19 +26,36 @@ const routes = [
   {
     path: '/new-bill',
     name: 'NewBill',
+    meta:{protected: true},
     component: () => import('../views/NewBill.vue')
   },
   {
     path: '/bills/:billId',
     name: 'Detail',
+    meta:{protected: true},
     component: Detail
-  }
+  },
+  {
+    path: '*',
+    name: 'Default',
+    redirect: '/login',
+    //component: () => import('../views/Login.vue')
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.meta.protected){
+    localStorage.getItem('user') ? next() : next('/login');
+  }
+  else{
+    localStorage.getItem('user') ? next('/home') : next();
+  }
 })
 
 export default router

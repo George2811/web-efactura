@@ -83,7 +83,7 @@ export default {
             (userId) => {
               console.log('Logged In ' + userId);
               //console.log(this.$store.state);
-              this.$router.push('/');
+              this.$router.push('/home');
             },
             error => {
               console.log('The login failed ' + error);

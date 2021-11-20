@@ -153,9 +153,6 @@ export default {
         console.log(error);
       });
     }
-  },
-  created() {
-    console.log(this.bill);
   }
 }
 </script>
