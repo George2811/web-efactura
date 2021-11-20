@@ -31,7 +31,7 @@
         ></v-progress-circular>
       </div>
       <div class="d-sm-flex justify-space-around sub-div" v-if="existBills">
-        <bill-card v-for="(bill, i) in bills" :key="i" :bill="bill" @update="retrieveBills"></bill-card>
+        <bill-card v-for="(bill, i) in bills.slice((this.page-1)*3, this.page*3)" :key="i" :bill="bill" @update="retrieveBills"></bill-card>
       </div>
       <div class="d-sm-flex justify-space-around sub-div" v-if="!existBills && !loading">
           <HomeAlt></HomeAlt>
@@ -41,7 +41,7 @@
           v-if="existBills"
           class="pagination pt-12"
           v-model="page"
-          :length="3"
+          :length="lengthBills"
       ></v-pagination>
     </v-card>
 
@@ -70,6 +70,9 @@ export default {
   computed:{
     existBills(){
       return this.bills.length > 0;
+    },
+    lengthBills(){
+      return Math.ceil(this.bills.length/3) ? Math.ceil(this.bills.length/3) : 1;
     }
   },
   methods:{

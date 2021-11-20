@@ -18,6 +18,9 @@
       ></v-text-field>
       <v-text-field
           v-model="password"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          @click:append="showPassword = !showPassword"
           label="Contraseña"
           placeholder="12345"
           :rules="passwordRules"
@@ -31,7 +34,12 @@
           class="mx-12"
           type="submit"
       >
-        Iniciar Sesión
+        <div v-if="!request">Iniciar Sesión</div>
+        <v-progress-circular
+            v-else
+            indeterminate
+            color="white"
+        ></v-progress-circular>
       </v-btn>
     </v-form>
   </v-card>
@@ -41,7 +49,9 @@
 export default {
   name: "login-form",
   data: () => ({
+    showPassword: false,
     login: false,
+    request: false,
     username: '',
     password: '',
     usernameRules: [
@@ -66,6 +76,7 @@ export default {
       console.log(this.user);
     },
     handleLogin() {
+      this.request = true;
       this.setUser();
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/login', this.user).then(
@@ -77,6 +88,7 @@ export default {
             error => {
               console.log('The login failed ' + error);
               this.$emit('loginFailed');
+              this.request = false;
             }
         );
       }

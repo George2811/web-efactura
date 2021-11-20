@@ -4,7 +4,16 @@
     <div class="bg py-12"></div>
 
     <div class="form1 py-12">
-      <register-form></register-form>
+      <register-form @registerFailed="errorLogin"></register-form>
+    </div>
+    <div class="alert" v-if="registerFailed">
+      <v-alert
+          border="top"
+          dense
+          elevation="1"
+          prominent
+          type="error"
+      >El usuario ya existe, intenta con otro.</v-alert>
     </div>
   </div>
 
@@ -17,6 +26,20 @@ export default {
   name: "Register",
   components: {
     RegisterForm,
+  },
+  data(){
+    return {
+      registerFailed: false
+    }
+  },
+  methods:{
+    errorLogin(){
+      this.registerFailed = !this.registerFailed;
+      window.setTimeout(this.otherLogin, 3000);
+    },
+    otherLogin(){
+      this.registerFailed = !this.registerFailed;
+    }
   }
 }
 </script>
@@ -41,6 +64,12 @@ export default {
   margin: 0 auto;
   position: relative;
   top: 20%
+}
+
+.alert{
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 </style>

@@ -11,7 +11,7 @@
 
             <v-list-item-title class="text-caption font-weight-bold text-body-2">R.U.C</v-list-item-title>
             <v-list-item-subtitle class="box-values text-right font-weight-bold text-body-2 py-2 px-4">
-              {{bill.ruc}}
+              {{bill.ruc || 'No hay'}}
             </v-list-item-subtitle>
 
           </v-list-item>

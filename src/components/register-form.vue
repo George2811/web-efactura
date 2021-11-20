@@ -27,6 +27,9 @@
       <v-text-field
           v-model="password"
           label="Contraseña"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          @click:append="showPassword = !showPassword"
           placeholder="12345"
           outlined
           class="mx-5"
@@ -37,6 +40,9 @@
       <v-text-field
           v-model="confirmed"
           label="Confirmar Contraseña"
+          :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword2 ? 'text' : 'password'"
+          @click:append="showPassword2 = !showPassword2"
           placeholder="12345"
           outlined
           class="mx-5"
@@ -50,7 +56,12 @@
           class="mx-12"
           type="submit"
       >
-        Registrarse
+        <div v-if="!request">Registrarse</div>
+        <v-progress-circular
+            v-else
+            indeterminate
+            color="white"
+        ></v-progress-circular>
       </v-btn>
     </v-form>
   </v-card>
@@ -60,7 +71,10 @@
 export default {
   name: "register-form",
   data: () => ({
+    showPassword: false,
+    showPassword2: false,
     register: false,
+    request: false,
     username: '',
     password: '',
     confirmed: '',
@@ -98,6 +112,7 @@ export default {
       console.log(this.user);
     },
     handleRegister() {
+      this.request = true;
       this.setUser();
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/register', this.user).then(
@@ -108,6 +123,8 @@ export default {
             },
             error => {
               console.log('The register failed' + error.response);
+              this.$emit('registerFailed');
+              this.request = false;
             }
         );
       }

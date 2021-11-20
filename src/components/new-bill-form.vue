@@ -752,7 +752,7 @@ export default {
       // ver detalles de una bill
       // eliminar una bill
       // flujo de la app y toolbar de Logueado (arreglar)
-      //TODO: Paginación del Home
+      // Paginación del Home
     },
     testear(){
       console.log(this.getInterestRate());

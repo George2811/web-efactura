@@ -17,7 +17,7 @@
       <v-spacer></v-spacer>
       <p class="d-inline-flex text-caption text-sm-h6 py-1 mt-2">TCEA: </p>
 
-      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> {{ this.bill.tcea }}%</p>
+      <p class="d-inline-flex box-values text-caption text-sm-h6 ml-3 my-2 py-1 px-5"> {{ this.bill.tcea }} %</p>
 
     </v-card>
 
