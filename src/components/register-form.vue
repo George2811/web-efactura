@@ -39,7 +39,7 @@
       </v-text-field>
       <v-text-field
           v-model="confirmed"
-          label="Confirmar Contraseña"
+          label="Confirmar contraseña"
           :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
           :type="showPassword2 ? 'text' : 'password'"
           @click:append="showPassword2 = !showPassword2"

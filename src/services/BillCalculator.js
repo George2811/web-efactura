@@ -27,14 +27,20 @@ export default class BillCalculator{
 
     }
 
-    /*toCapitalization(){
-        this.capitalization
-    }*/
+    toCapitalization(time){
+        if(this.capitalization === 1)
+            return time;
+        if(this.capitalization === 7)
+            return time/7.5;
+
+        if(this.capitalization === 30)
+            return time/30;
+    }
     toPercent(val){
         return val/100;
     }
     fromNominalToEffectiveRate(){
-        this.effectiveRate = 100 * (Math.pow(1 + (this.toPercent(this.ratePercent)/this.rateTimeType), this.time) - 1);
+        this.effectiveRate = 100 * (Math.pow(1 + (this.toPercent(this.ratePercent)/this.toCapitalization(this.rateTimeType)), this.toCapitalization(this.time)) - 1);
         return this.effectiveRate;
     }
     findEffectiveRate(){

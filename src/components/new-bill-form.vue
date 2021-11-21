@@ -756,7 +756,8 @@ export default {
         console.log(error);
         this.savingBill = false;
       });
-      //TODO: probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
+      //TODO: T.I.R
+      // probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
       // añadir retention a la calculadora de bill
       // ver detalles de una bill
       // eliminar una bill
