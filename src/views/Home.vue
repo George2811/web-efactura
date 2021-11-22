@@ -7,7 +7,7 @@
       <p class="text-h6 text-sm-h5 font-weight-bold cl-text">Mis Facturas</p>
       <v-spacer></v-spacer>
 
-      <p class="text-caption  text-sm-h5 font-weight-bold cl-text">T.I.R 28.6666%</p>
+      <p class="text-caption  text-sm-h5 font-weight-bold cl-text">T.I.R {{(this.tir)}}%</p>
       <v-spacer></v-spacer>
 
       <v-btn
@@ -50,6 +50,7 @@
 
 <script>
 import BillsApiService from "@/services/bills-api.service";
+import TirCalculator from "@/services/TirCalculator";
 
 import BillCard from '@/components/bill-card.vue'
 import HomeAlt from '../components/home-card-alt.vue'
@@ -61,11 +62,13 @@ export default {
     HomeAlt
   },
   data: () => ({
-    page: 1,
-    data : [1,2,3],
     loading: true,
-    bills : [],
+    page: 1,
     userId: 0,
+    bills : [],
+    values: [],
+    dates: [],
+    tir: 0
   }),
   computed:{
     existBills(){
@@ -79,16 +82,38 @@ export default {
     getUser(){
       this.userId = JSON.parse(localStorage.getItem('user')).userId;
     },
+    getDates(){
+      let expDates = this.bills.map(e => new Date(e.expiration).getTime());
+      let issueDates = this.bills.map(e => new Date(e.issue).getTime());
+      this.dates[0] = 0;
+      for (let i = 0; i < expDates.length; i++){
+        let dif = (expDates[i] - issueDates[i])/(1000*60*60*24);
+        this.dates.push(dif);
+      }
+    },
     retrieveBills(){
       this.page = 1;
       BillsApiService.getAllByUserId(this.userId)//.userId
           .then(response => {
             this.loading = false;
             this.bills = response.data.content;
+            console.log(this.bills);
+            // Push delivered values
+            this.values = this.bills.map(e => e.deliveredValue);
+            // Push at the beginning sum of received values
+            let receivedValue = this.bills.map(e => e.receivedValue).reduce((a, b) => a+b, 0);
+            this.values.unshift(-receivedValue);
+            this.findTir();
           })
           .catch(err => {
             console.log(err);
           });
+    },
+    findTir(){
+      this.getDates();
+      let tirCalculator = new TirCalculator(this.values, this.dates);
+      tirCalculator.binary_search();
+      this.tir = 100*tirCalculator.tir.toFixed(9);
     }
   },
   created() {

@@ -32,7 +32,6 @@ export default class BillCalculator{
             return time;
         if(this.capitalization === 7)
             return time/7.5;
-
         if(this.capitalization === 30)
             return time/30;
     }

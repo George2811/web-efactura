@@ -733,9 +733,9 @@ export default {
         "finalExpenses": this.sumCosts(this.finalCosts),
         "retention": parseFloat(this.getRetention()),
         "tcea": parseFloat(billCalculator.tcea.toFixed(7)),
-        "netWorth": billCalculator.netValue,
-        "deliveredValue": billCalculator.deliveredValue,
-        "receivedValue": billCalculator.receivedValue
+        "netWorth": billCalculator.netValue.toFixed(2),
+        "deliveredValue": billCalculator.deliveredValue.toFixed(2),
+        "receivedValue": billCalculator.receivedValue.toFixed(2)
       }
     },
     handleNewBill(){
@@ -756,13 +756,6 @@ export default {
         console.log(error);
         this.savingBill = false;
       });
-      //TODO: T.I.R
-      // probar más casos de creacion de bills (TE -> TERMIANDA, TN -> solo falta capitalizacion)
-      // añadir retention a la calculadora de bill
-      // ver detalles de una bill
-      // eliminar una bill
-      // flujo de la app y toolbar de Logueado (arreglar)
-      // Paginación del Home
     },
     testear(){
       console.log(this.getInterestRate());
