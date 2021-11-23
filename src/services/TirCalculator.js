@@ -10,7 +10,7 @@ export default class TirCalculator {
     vanCalculator(rate){
         let van = this.values[0];
         for(let i = 1; i < this.values.length; i++){
-            van += this.values[i]/ Math.pow(1+rate,(this.dates[i]/365));
+            van += this.values[i]/ Math.pow(1+rate,(this.dates[i]/360));
         }
         return van;
     }
